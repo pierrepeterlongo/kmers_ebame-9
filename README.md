@@ -7,7 +7,7 @@ Lecture slides xxx
 ## 0. Preliminaries
 
 For this tutorial we prepared VMs on wich we installed kmtricks and kmindex. 
-After you connected to your VM through SSH run the following command:
+After you connect to your VM through SSH run the following command:
 
 ```bash
 tmux
@@ -26,7 +26,7 @@ The data are already on the VM.
 
 1. Data used for testing kmtricks are located in `data/public/sra/`. We will use `SRR8652861_1.fastq.gz`, `SRR8653248_1.fastq.gz`, and `SRR8653247_1.fastq.gz`. They all are Illumina HiSeq 2500 runs of Human infant gut virome.
   
-2. Data used for testing kmindex are located in `data/public/teachdata/ebame/kmindex/`, in subdirectories `SRA_VIRAL/` and `SRA_VIRAL2/`. They are **unitigs** from 2x100 various viral RNA datatsets. Unitigs there were create by the [logan](https://github.com/IndexThePlanet/Logan/blob/main/Unitigs.md) project.
+2. Data used for testing kmindex are located in `data/public/teachdata/ebame/kmindex/`, in subdirectories `SRA_VIRAL/` and `SRA_VIRAL2/`. They are **unitigs** from 2x100 various viral RNA datasets. Unitigs were created by the [logan](https://github.com/IndexThePlanet/Logan/blob/main/Unitigs.md) project.
   
 
 ### Tools used for this tutorial.
@@ -42,9 +42,9 @@ cd kmtricks
 
 Note that kmtricks can also be installed by other means (see this [doc](https://github.com/tlemane/kmtricks/wiki)).
 
-2. **kmindex**. You will install it, see dedicated section below
+2. **kmindex**. You will install it, see the dedicated section below
   
-3. **back_to_sequences**. You will install it, see dedicated section below
+3. **back_to_sequences**. You will install it, see the dedicated section below
   
 
 ## 1. Testing kmtricks
@@ -64,11 +64,11 @@ echo "D1: /home/ubuntu/data/public/sra/SRR8652861_1.fastq.gz" > fof_sra.txt
 echo "D2: /home/ubuntu/data/public/sra/SRR8653248_1.fastq.gz" >> fof_sra.txt
 ```
 
-**QuestionX**: What is the difference between '>' and '>>' in the previous command?
+**Question1**: What is the difference between '>' and '>>' in the previous command?
 
-**QuestionX**: What is the cumulated size of `D1`and `D2`?
+**Question2**: What is the cumulated size of `D1`and `D2`?
 
-**QuestionX: How to consider not only reads1, but to consider that `D1`is composed of `SRR8652861_1.fastq.gz` **and** `SRR8652861_2.fastq.gz`, and `D2` is composed of `SRR8653248_1.fastq.gz` **and** `SRR8653248_2.fastq.gz`?
+**Question3**: How to consider not only reads1, but to consider that `D1`is composed of `SRR8652861_1.fastq.gz` **and** `SRR8652861_2.fastq.gz`, and `D2` is composed of `SRR8653248_1.fastq.gz` **and** `SRR8653248_2.fastq.gz`?
 
 - Create the raw counting matrix
 
@@ -76,43 +76,37 @@ echo "D2: /home/ubuntu/data/public/sra/SRR8653248_1.fastq.gz" >> fof_sra.txt
 ~/kmtricks/bin/kmtricks pipeline --file fof_sra.txt --run-dir ./matrix_example --mode kmer:count:bin --hard-min 2 --cpr -t 16
 ```
 
-**Question2**: Check and understand all the 7 arguments & options used here:
+**Question4**: Check and understand all the 7 arguments & options used here:
 
 1. `pipeline`
-  
 2. `--file fof_sra.txt`
-  
 3. `--run-dir ./matrix_example`
-  
 4. `--mode kmer:count:bin`
-  
 5. `--hard-min 2`
-  
 6. `--cpr`
-  
 7. `-t 16`
   
 
-**QuestionX**: What is the main output from this command. Can it be read by human?
+**Question5**: What is the main output from this command? Can humans read it?
 
-- Dump the matrix in a human readable format:
+- Dump the matrix in a human-readable format:
 
 ```bash
 ~/kmtricks/bin/kmtricks aggregate --matrix kmer --format text --cpr-in --run-dir matrix_example >  kmer_matrix.txt
 ```
 
-**QuestionX**: What is the result and what information does it contains?
+**Question6**: What is the result and what information does it contain?
 
-**QuestionX**: How many distinct *solid* kmers the two datasets contain?
+**Question7**: How many distinct *solid* kmers the two datasets contain?
 
-**QuestionX**: We could have dumped directly the matrices in a human readable format. How to do this?
+**Question8**: We could have dumped directly the matrices in a human-readable format. How to do this?
 
 ### 1.2 Differences between matrices
 
-Imagine now we are interested in a new dataset SRR8653247_1.fastq.gz but neither in SRR8652861_1.fastq.gz and SRR8653248_1.fastq.gz
+Imagine now we are interested in a new dataset SRR8653247_1.fastq.gz but neither in SRR8652861_1.fastq.gz nor SRR8653248_1.fastq.gz
 
-For doing this we can use the filter module. 
-However, this module is not installed by default. Let's intall it:
+To do this we can use the filter module. 
+However, this module is not installed by default. Let's install it:
 
 ```bash
 cd ~/kmtricks
@@ -129,13 +123,13 @@ echo "R1: /home/ubuntu/data/public/sra/SRR8653247_1.fastq.gz" > remove_fof.txt
 ../kmtricks/bin/kmtricks aggregate --run-dir filtered_matrix_R1_only/ --count R1:kmer --format text --output kmers_only_R1.txt
 ```
 
-**QuestionX**: validate that first kmer found is only in `R1` and not in `D1` `D2`
+**Question9**: validate that first kmer found is only in `R1` and not in `D1` `D2`
 
-**QuestionX**: How many distinct kmers are only in `R1` and not in `D1` nor `D2`?
+**Question10**: How many distinct kmers are only in `R1` and not in `D1` nor `D2`?
 
-### 1.3 Find kmers present in all datatest:
+### 1.3 Find kmers present in all datasets:
 
-Now let's look to kmers in the three datasets:
+Now let's look at kmers in the three datasets:
 
 ```bash
 ../kmtricks/bin/kmtricks filter --in-matrix matrix_example --key remove_fof.txt --output filtered_matrix_R1_D1_D2 --hard-min 2 --out-types {m,v} --cpr-in
@@ -144,7 +138,7 @@ Now let's look to kmers in the three datasets:
 
 ### 1.4 Bonus kmtricks: plugins.
 
-Imagine now you're interested by building matrices but only for kmers present at least 12 times in both `D1` and `D2`. In this case you can filer-out the obtained `kmer_matrix.txt`. However, this can be an heavy file. With kmtricks you can write our own plugins, filtering directly the created matrix. Let's have a look.
+Imagine now you're interested in building matrices but only for kmers present at least 12 times in both `D1` and `D2`. In this case, you can filter-out the obtained `kmer_matrix.txt`. However, this can be a heavy file. With kmtricks you can write our plugins, filtering directly the created matrix. Let's have a look.
 
 Create the following plugin in `~/kmtricks/plugins/my_plugin/my_plugin.cpp`
 
@@ -200,17 +194,17 @@ cd ~/kmtricks_tests/
 ../kmtricks/bin/kmtricks aggregate --matrix kmer --format text --cpr-in --run-dir matrix_example_plugin > final_matrix_plugin.txt
 ```
 
-**QuestionX**: validate on the obtained `final_matrix_plugin.txt` that kmers have an abundance of at least 12 and 12 in `D1`and `D2`.
+**Question11**: validate on the obtained `final_matrix_plugin.txt` that kmers have an abundance of at least 12 and 12 in `D1`and `D2`.
 
-**QuestionX**: Modify the plugin (function `process_kmer`) to retain only kmers seen at least 12 times in `D1` and whose abundance is at least double in `D2`. Recompile, re-test, and validate the output.
+**Question12**: Modify the plugin (function `process_kmer`) to retain only kmers seen at least 12 times in `D1` and whose abundance is at least double in `D2`. Recompile, re-test, and validate the output.
 
 ## 2. Testing kmindex
 
-Up to now, we have created matrices. However, they are used as indexes. This is where kmindex arrives. It can use kmtricks matrices as basis for building indexes, but it can also handle all the indexing and query pipelines.
+Up to now, we have created matrices. However, they are used as indexes. This is where kmindex arrives. It can use kmtricks matrices as the basis for building indexes, but it can also handle all the indexing and query pipelines.
 
 ### 2.1 Install kmindex
 
-For this lesson we will use the conda environment
+For this lesson, we will use the conda environment
 
 ```bash
 cd
@@ -219,29 +213,28 @@ conda activate ./kmindex_env
 conda install -c conda-forge -c tlemane kmindex --yes
 ```
 
-Let's go in a specific directory:
+Let's go to a specific directory:
 
 ```bash
 cd
 mkdir kmindex_tests && cd kmindex_tests
 ```
 
-**QuestionX**: Check that kmindex is installed and have a look to the help.
+**Question13**: Check that kmindex is installed and have a look at the help.
 
 ### 2.2 Create a first index
 
 Let us construct a first index from a set of 100 unitig files from the logan project.
 
-**QuestionX**: As files contains unitig, what should be chosen as the minimum abundance to keep a k-mer? What is the corresponding option name?
+**Question14**: As files contain unitigs, what should be chosen as the minimum abundance to keep a k-mer? What is the corresponding option name?
 
-**QuestionX**: The number of distinct kmers per unitig file is below $2^{19}$. We will create bloom filters so that the false positive rate is 25%. What should be the size of the bloom filters?
+**Question15**: The number of distinct kmers per unitig file is below $2^{19}$. We will create bloom filters so that the false positive rate is 25%. What should be the size of the bloom filters?
 
 - Note1: we used [ntcard](https://github.com/bcgsc/ntCard) to estimate the number of kmers in each file.
-  
-- Note2: see for instance [Bloom filter calculator](https://hur.st/bloomfilter/), using a unique hash function, for compute the BF size, knowing the number of kmers to index
+- Note2: see for instance [Bloom filter calculator](https://hur.st/bloomfilter/), using a unique hash function, to compute the BF size, knowing the number of kmers to index
   
 
-**QuestionX**: What is the option name used to fix the bloom filter size?
+**Question16**: What is the option name used to fix the bloom filter size?
 
 We can also use the following command lines for automatic computation.
 
@@ -251,38 +244,39 @@ log_bf_size=19
 real_bf_size=$( echo "(-( 2^${log_bf_size} )* l($p) / l(2)^2) " | bc -l | cut -d "." -f 1 )
 ```
 
-Let's create an index, indexing 100 unitig files located in `/ifb/data/public/teachdata/ebame/kmindex/SRA_VIRAL`:
+Let's create an index, indexing 100 files each containing unitigs. Files are located in `/ifb/data/public/teachdata/ebame/kmindex/SRA_VIRAL`:
 
-First we need a file of file. We create a file containing for each .fa file in this directory: `its accession name: full path`.
+First, we need a file of file. We create a file containing, for each .fa file in this directory,: `its accession name: full path`.
 
-```bash:
-for filename in `ls /ifb/data/public/teachdata/ebame/kmindex/SRA_VIRAL/*.fa`; do accession=`basename $filename | cut -d "." -f 1`; echo $accession: $filename; done > fof.txt
+```bash
+for filename in `ls /ifb/data/public/teachdata/ebame/kmindex/SRA_VIRAL/*.fa`; 
+  do accession=`basename $filename | cut -d "." -f 1`; 
+  echo $accession: $filename; 
+done > fof.txt
 ```
 
-**QuestionX**: Decorticate this for loop, understanding each sub-command.
+**Question17**: Decorticate this for loop, understanding each sub-command.
 
-Now we are ready for running kmindex.
+Now we are ready to run kmindex.
 
 kmindex expects 3 output information:
 
-- the name of the main index (in which several sub indexes can be registers as we will see later). This is the `--index` parameter.
-  
+- the name of the main index (in which several sub-indexes can be registered as we will see later). This is the `--index` parameter.
 - the directory name of the constructed index. This is the `--run-dir` parameter.
-  
 - the name of the created index. This will be used in the main index. This is the `--register-as` parameter.
   
 
-**QuestionX**: add the missing options and run the completed command:
+**Question18**: add the missing options and run the completed command:
 
 ```bash
 kmindex build --index index_VRL --run-dir dir_index_VRL --register-as reg_index_VRL --kmer-size 25 XXX
 ```
 
-**QuestionX**: look at the two created directories, and explain their content.
+**Question19**: look at the two created directories, and explain their content.
 
-**QuestionX**: Use the `index-infos` kmindex command on the created index
+**Question20**: Use the `index-infos` kmindex command on the created index
 
-We arrive now in the most interesting part (?) of the day: let's query our sequences. We want to know where the 3 first reads of `R10000513.unitigs.fa` are eventually among the 100 files we've indexed
+We arrive now at the most interesting part (?) of the day: let's query our sequences. We want to know where the 3 first reads of `R10000513.unitigs.fa` are eventually among the 100 files we've indexed
 
 Let's first create the query:
 
@@ -296,31 +290,31 @@ And now let's run the query:
 kmindex query -i index_VRL -q query.fa -z 5
 ```
 
-**QuestionX**. Was it fast?
+**Question21**. Was it fast?
 
-**QuestionX:** Check and understand the output json file
+**Question22:** Check and understand the output json file
 
-**QuestionX**: verify that each of the three reads was correctly found in the ERR10000513 file
+**Question23**: verify that each of the three reads was correctly found in the ERR10000513 file
 
-**QuestionX**: recall the role of the -z parameter, and try different values (including 1 and 8)
+**Question24**: recall the role of the -z parameter, and try different values (including 1 and 8)
 
 ### 2.3 Add a second index to the first one
 
-**QuestionX** Create a second index with files located in `~/data/mydatalocal/SRA_VIRAL2` (create a fof2.txt file of files)
+**Question25** Create a second index with files located in `~/data/mydatalocal/SRA_VIRAL2` (create a fof2.txt file of files)
 
 ```bash
 kmindex build --index index_VRL --run-dir dir_index_VRL2 --register-as reg_index_VRL2 --fof fof2.txt --kmer-size 25 XXX
 ```
 
-**QuestionX**: understand parameters **index**, **run-dir**, **register-as**
+**Question26**: understand parameters **index**, **run-dir**, **register-as**
 
-**QuestionX**: understand the structure of the directories
+**Question27**: understand the structure of the directories
 
-**QuestionX**: restart the previous query with the same parameters, did we query both indexes?
+**Question28**: restart the previous query with the same parameters, did we query both indexes?
 
 ### 2.4 Merge a second index to the first one
 
-Even if the two sub-indexes are register in a unique large one, they are distinct and require two queries. 
+Even if the two sub-indexes are registered in a unique large one, they are distinct and require two queries. 
 With kmindex, we can merge distinct indexes, as long as they were created using the same repartition function.
 
 Let's re-construct a merged index:
@@ -343,9 +337,9 @@ Finally, merge the two indexes:
 kmindex merge --index merged_index_VRL --new-name merged_index_VRL --to-merge reg_index_VRL,reg_index_VRL2 --new-path dir_merged_index
 ```
 
-**QuestionX**: restart the previous query. How many indexes were queried?
+**Question29**: restart the previous query. How many indexes were queried?
 
-## 3. Find match between sequences.
+## 3. Find matches between sequences.
 
 Up to now we "only" found matches between a query and a set of sequences (here unitigs, but it can be genes, reads, ...). Once we have identified a target for a query one may want to go further and find back to which sequences the query is similar.
 
@@ -372,7 +366,7 @@ cd ..
 rm -rf back_to_sequences
 ```
 
-Now b2s is installed, just check the help: ` back_to_sequences --help`
+Now that b2s is installed, just check the help: ` back_to_sequences --help`
 
 ### 3.2 Run back_to_sequences
 
@@ -384,6 +378,6 @@ We are now going to find which unitigs from `ERR10000176` matched the query:
 back_to_sequences --in-kmers query.fa --in-sequences /ifb/data/public/teachdata/ebame/kmindex/SRA_VIRAL/ERR10000176.unitigs.fa --out-sequences out_ERR10000176_queried.fa --out-kmers out_ERR10000176_queried_kmers.txt -m 5
 ```
 
-**QuestionX**: What are the two created files, what do they contain?
+**Question30**: What are the two created files, what do they contain?
 
-**QuestionX**: Check the possible options of b2s, enabling to obtain more "pseudo-mapping" informations.
+**Question31**: Check the possible options of b2s, enabling to obtain more "pseudo-mapping" informations.
