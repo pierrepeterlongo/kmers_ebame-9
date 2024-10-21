@@ -2,7 +2,7 @@
 
 Pierre Peterlongo. Ebame-9.
 
-Lecture slides xxx
+Lecture slides Pierre_Peterlongo_kmers.pdf
 
 ## 0. Preliminaries
 
