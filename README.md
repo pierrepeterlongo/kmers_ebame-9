@@ -412,7 +412,7 @@ Up to now, we have created matrices. However, they are used as indexes. This is 
 
 ### 2.1 Install kmindex
 
-For this lesson, we will use the conda environment
+For this lesson, we will use the conda environment. 
 
 ```bash
 cd
@@ -420,6 +420,7 @@ conda create -p kmindex_env --yes
 conda activate ./kmindex_env
 conda install -c conda-forge -c tlemane kmindex --yes
 ```
+(takes ~1mn30)
 
 Let's go to a specific directory:
 
@@ -431,8 +432,11 @@ mkdir kmindex_tests && cd kmindex_tests
 **Question13**: Check that kmindex is installed and have a look at the help.
 <details><summary>Answer</summary>
 <p>
-
-TODO
+  
+```bash
+kmindex -h
+```
+  Prints the help
 </p>
 </details>
 
@@ -444,37 +448,46 @@ Let us construct a first index from a set of 100 unitig files from the logan pro
 <details><summary>Answer</summary>
 <p>
 
-TODO
+All kmers are unique in unitigs. So we should keep all kmers, specifying the threshold to 1.
+This is the `--hard-min 1` option
 </p>
 </details>
 
-**Question15**: The number of distinct kmers per unitig file is below $2^{19}$. We will create bloom filters so that the false positive rate is 25%. What should be the size of the bloom filters?
+**Question15**: The number of distinct kmers per unitig file is below $2^{19}$. We will create bloom filters so that the false positive rate is at most 25%. What should be the size of the bloom filters, knowing that we use 1 hash function?
+See for instance [Bloom filter calculator](https://hur.st/bloomfilter/), using a unique hash function, to compute the BF size, knowing the number of kmers to index.
+
+
+- Note: we used [ntcard](https://github.com/bcgsc/ntCard) to estimate the number of kmers in each file.
 <details><summary>Answer</summary>
 <p>
 
-TODO
-</p>
-</details>
+https://hur.st/bloomfilter/?n=524288&p=0.25&m=&k=1 
 
-- Note1: we used [ntcard](https://github.com/bcgsc/ntCard) to estimate the number of kmers in each file.
-- Note2: see for instance [Bloom filter calculator](https://hur.st/bloomfilter/), using a unique hash function, to compute the BF size, knowing the number of kmers to index
-  
+Bloom filter size should be 1822457.
 
-**Question16**: What is the option name used to fix the bloom filter size?
-<details><summary>Answer</summary>
-<p>
 
-TODO
-</p>
-</details>
-
-We can also use the following command lines for automatic computation.
+Note: We can also use the following command lines for automatic computation.
 
 ```bash
 p=0.25
 log_bf_size=19
 real_bf_size=$( echo "(-( 2^${log_bf_size} )* l($p) / l(2)^2) " | bc -l | cut -d "." -f 1 )
 ```
+</p>
+</details>
+
+
+  
+
+**Question16**: What is the option name used to fix the bloom filter size?
+<details><summary>Answer</summary>
+<p>
+
+--bloom-size 1822457
+</p>
+</details>
+
+
 
 Let's create an index, indexing 100 files each containing unitigs. Files are located in `/ifb/data/public/teachdata/ebame/kmindex/SRA_VIRAL`:
 
