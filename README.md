@@ -444,7 +444,35 @@ kmindex -h
 
 Let us construct a first index from a set of 100 unitig files from the logan project.
 
-**Question14**: As files contain unitigs, what should be chosen as the minimum abundance to keep a k-mer? What is the corresponding option name?
+
+Let's create an index, indexing 100 files each containing unitigs. Files are located in `/ifb/data/public/teachdata/ebame/kmindex/SRA_VIRAL`:
+
+First, we need a file of file. We create a file containing, for each .fa file in this directory,: `its accession name: full path`.
+
+```bash
+for filename in `ls /ifb/data/public/teachdata/ebame/kmindex/SRA_VIRAL/*.fa`; 
+  do
+  accession=`basename $filename | cut -d "." -f 1`; 
+  echo $accession: $filename; 
+done > fof.txt
+```
+
+**Question14**: Decorticate this for loop, understanding each sub-command.
+<details><summary>Answer</summary>
+<p>
+  
+Each `.fa` file is as `/ifb/data/public/teachdata/ebame/kmindex/SRA_VIRAL/DRR024015.unitigs.fa`
+For each of them, we want to create in the file of file a line as `DRR024015: /ifb/data/public/teachdata/ebame/kmindex/SRA_VIRAL/DRR024015.unitigs.fa`
+
+1. The `for` loop enumerates each `.fa` file.
+2. `accession=\`basename $filename | cut -d "." -f 1\``; collects the accession value (`DRR024015` on the example).
+  - It removes the path of the filename (removes `/ifb/data/public/teachdata/ebame/kmindex/SRA_VIRAL/`)
+  - It cuts the remaining (`DRR024015.unitigs.fa`) to keep only what is before first '.' (`cut -d "." -f 1`)
+3. it prints the accession followed by ':' and then the full path 
+</p>
+</details>
+
+**Question15**: As files contain unitigs, what should be chosen as the minimum abundance to keep a k-mer? What is the corresponding option name?
 <details><summary>Answer</summary>
 <p>
 
@@ -453,7 +481,7 @@ This is the `--hard-min 1` option
 </p>
 </details>
 
-**Question15**: The number of distinct kmers per unitig file is below $2^{19}$. We will create bloom filters so that the false positive rate is at most 25%. What should be the size of the bloom filters, knowing that we use 1 hash function?
+**Question16**: The number of distinct kmers per unitig file is below $2^{19}$. We will create bloom filters so that the false positive rate is at most 25%. What should be the size of the bloom filters, knowing that we use 1 hash function?
 See for instance [Bloom filter calculator](https://hur.st/bloomfilter/), using a unique hash function, to compute the BF size, knowing the number of kmers to index.
 
 
@@ -479,7 +507,7 @@ real_bf_size=$( echo "(-( 2^${log_bf_size} )* l($p) / l(2)^2) " | bc -l | cut -d
 
   
 
-**Question16**: What is the option name used to fix the bloom filter size?
+**Question17**: What is the option name used to fix the bloom filter size?
 <details><summary>Answer</summary>
 <p>
 
@@ -489,24 +517,6 @@ real_bf_size=$( echo "(-( 2^${log_bf_size} )* l($p) / l(2)^2) " | bc -l | cut -d
 
 
 
-Let's create an index, indexing 100 files each containing unitigs. Files are located in `/ifb/data/public/teachdata/ebame/kmindex/SRA_VIRAL`:
-
-First, we need a file of file. We create a file containing, for each .fa file in this directory,: `its accession name: full path`.
-
-```bash
-for filename in `ls /ifb/data/public/teachdata/ebame/kmindex/SRA_VIRAL/*.fa`; 
-  do accession=`basename $filename | cut -d "." -f 1`; 
-  echo $accession: $filename; 
-done > fof.txt
-```
-
-**Question17**: Decorticate this for loop, understanding each sub-command.
-<details><summary>Answer</summary>
-<p>
-
-TODO
-</p>
-</details>
 
 Now we are ready to run kmindex.
 
