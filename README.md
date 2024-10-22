@@ -681,7 +681,7 @@ We see that the two indexes have been queried
 </p>
 </details>
 
-### 2.4 Merge a second index to the first one
+### 2.4 [If we have time] Merge a second index to the first one
 
 Even if the two sub-indexes are registered in a unique large one, they are distinct and require two queries. 
 With kmindex, we can merge distinct indexes, as long as they were created using the same repartition function.
@@ -691,14 +691,15 @@ Let's re-construct a merged index:
 First, construct the first one, with distinct names:
 
 ```bash
-kmindex build --index merged_index_VRL --run-dir dir_index_VRL_merge --register-as reg_index_VRL --kmer-size 25 XXX
+kmindex build --index merged_index_VRL --run-dir dir_index_VRL_merge --register-as reg_index_VRL --kmer-size 25 --bloom-size 1822457 --hard-min 1 --fof fof.txt
 ```
 
 Second, create the second index, using the repartition computed by the first call:
 
 ```bash
-kmindex build --index merged_index_VRL --run-dir dir_index_VRL_merge2 --register-as reg_index_VRL2 --kmer-size 25 --from reg_index_VRL XXX
+kmindex build --index merged_index_VRL --run-dir dir_index_VRL_merge2 --register-as reg_index_VRL2 --from reg_index_VRL -fof fof2.txt --hard-min 1
 ```
+Note that here we reuse all parameters from `merged_index_VRL`, no need to specify bloom size 
 
 Finally, merge the two indexes:
 
@@ -711,7 +712,15 @@ kmindex merge --index merged_index_VRL --new-name merged_index_VRL --to-merge re
 <details><summary>Answer</summary>
 <p>
 
-TODO
+```bash
+kmindex query -i merged_index_VRL/ -q query.fa -r 0.1  -z 8
+[24/10/22 13:56:16][I:99498] Global index: 'merged_index_VRL'
+[24/10/22 13:56:16][I:99498] Starting 'merged_index_VRL' query (199 samples)
+[24/10/22 13:56:16][I:99498] Index 'merged_index_VRL' processed. (00s)
+[24/10/22 13:56:16][I:99498] Done (00s).
+```
+We see that we queried here a unique index.
+
 </p>
 </details>
 
