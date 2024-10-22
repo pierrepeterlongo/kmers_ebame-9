@@ -107,7 +107,8 @@ So the total size of uncompressed files is ~1.5GB
 
 <details><summary>Answer</summary>
 <p>
-
+More info here: https://github.com/tlemane/kmtricks/wiki/Input-data
+  
 With kmindex one line may correspond to multiple input files. So if we wish `D1` to be  `SRR8652861_1.fastq.gz` **and** `SRR8652861_2.fastq.gz` we can indicate this line in the for D1:
 
 `D1: /home/ubuntu/data/public/sra/SRR8652861_1.fastq.gz ; /home/ubuntu/data/public/sra/SRR8652861_2.fastq.gz`
@@ -128,6 +129,7 @@ echo "D2:  /home/ubuntu/data/public/sra/SRR8653248_1.fastq.gz ; /home/ubuntu/dat
 ```bash
 ~/kmtricks/bin/kmtricks pipeline --file fof_sra.txt --run-dir ./matrix_example --mode kmer:count:bin --hard-min 2 --cpr -t 16
 ```
+(should last ~1mn)
 
 **Question4**: Check and understand all the 7 arguments & options used here:
 
@@ -215,12 +217,16 @@ The most interesting output from this are the four matrices in the `matrix_examp
 ~/kmtricks/bin/kmtricks aggregate --matrix kmer --format text --cpr-in --run-dir matrix_example >  kmer_matrix.txt
 ```
 
+(should last ~30s)
+
 
 **Question6**: What is the result and what information does it contain?
 <details><summary>Answer</summary>
 <p>
 
-Now matrices are readable and can be viewed for instance with XXX
+Now matrices are readable and can be viewed for instance with `less kmer_matrix.txt`. This file contains kmers having at least 2 occurrences in at least one of the two datasets `D1` and `D2`. 
+
+For instance, the first line `AAAAAAAAAACATTGAACTAATCTAAAAGCA 2 0` indicates that kmer `AAAAAAAAAACATTGAACTAATCTAAAAGCA` has 2 occurrences in `D1` and 0 in `D2`.
 </p>
 </details>
 
@@ -228,15 +234,25 @@ Now matrices are readable and can be viewed for instance with XXX
 <details><summary>Answer</summary>
 <p>
 
-TODO
+A _solid_ kmer is a kmer considered as non-erroneous, here having at least 2 occurrences in at least one of the two files.
+Just counting the number of lines in the matrix gives the results
+```bash
+wc -l kmer_matrix.txt
+67345405 kmer_matrix.txt
+```
+So there are ~67 million solid kmers in the two datasets.
+
 </p>
 </details>
 
-**Question8**: We could have dumped directly the matrices in a human-readable format. How to do this?
+**Question8 Bonus (If we've time)**: We could have dumped directly the matrices in a human-readable format. How to do this?
 <details><summary>Answer</summary>
 <p>
 
-TODO
+kmtricks can output results in a human readable format: 
+```bash
+~/kmtricks/bin/kmtricks pipeline --file fof_sra.txt --run-dir ./readable_matrix_example --mode kmer:count:bin --hard-min 2 --cpr -t 16
+```
 </p>
 </details>
 
@@ -265,8 +281,10 @@ echo "R1: /home/ubuntu/data/public/sra/SRR8653247_1.fastq.gz" > remove_fof.txt
 **Question9**: validate that first kmer found is only in `R1` and not in `D1` `D2`
 <details><summary>Answer</summary>
 <p>
-
-TODO
+  
+1. Get the first read: `head -n 1 kmers_only_R1.txt` gives you `AAAAAAAAAACAAAGAGGAGTGGTTTATTAT 2`
+2. Check that this kmer `AAAAAAAAAACAAAGAGGAGTGGTTTATTAT` does not occur in `kmer_matrix.txt`: `grep AAAAAAAAAACAAAGAGGAGTGGTTTATTAT  kmer_matrix.txt`
+   This gives no results, meaning that the kmer is specific to `R1`
 </p>
 </details>
 
@@ -274,7 +292,7 @@ TODO
 <details><summary>Answer</summary>
 <p>
 
-TODO
+Again: `wc -l kmers_only_R1.txt`. There are 19752331 specific to `R1`.
 </p>
 </details>
 
