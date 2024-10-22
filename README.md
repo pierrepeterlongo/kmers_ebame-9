@@ -724,7 +724,7 @@ We see that we queried here a unique index.
 </p>
 </details>
 
-## Chapter 3. Find matches between sequences.
+## Chapter 3. Find matches between sequences using _back to sequences_
 
 Up to now we "only" found matches between a query and a set of sequences (here unitigs, but it can be genes, reads, ...). Once we have identified a target for a query one may want to go further and find back to which sequences the query is similar.
 
@@ -739,7 +739,7 @@ On this brand new VM, on need to install `cargo` (the Rust package manager):
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
 
-Then, source the `cargo` environment: `. "$HOME/.cargo/env"` (or reload the shell).
+Then, source the `cargo` environment: `. "$HOME/.cargo/env"` (or reload the environment).
 
 Once `cargo` is installed, it can be used to install b2s and all its dependencies:
 
@@ -755,12 +755,15 @@ Now that b2s is installed, just check the help: ` back_to_sequences --help`
 
 ### 3.2 Run back_to_sequences
 
-Previously we found a partial match between our query and the unitigs from sample `ERR10000176` located in `/ifb/data/public/teachdata/ebame/kmindex/SRA_VIRAL/ERR10000176.unitigs.fa`.
+Previously we found a partial match between our query and the unitigs from sample `DRR272392` located in `/ifb/data/public/teachdata/ebame/kmindex/SRA_VIRAL/DRR272392.unitigs.fa`.
 
-We are now going to find which unitigs from `ERR10000176` matched the query:
+This was show in output/reg_index_VRL.json, line `DRR272392": 0.4666666666666667,`
+
+
+We are now going to find which unitigs from `DRR272392` matched the query:
 
 ```bash
-back_to_sequences --in-kmers query.fa --in-sequences /ifb/data/public/teachdata/ebame/kmindex/SRA_VIRAL/ERR10000176.unitigs.fa --out-sequences out_ERR10000176_queried.fa --out-kmers out_ERR10000176_queried_kmers.txt -m 5
+back_to_sequences --in-kmers query.fa --in-sequences /ifb/data/public/teachdata/ebame/kmindex/SRA_VIRAL/DRR272392.unitigs.fa --out-sequences out_DRR272392_queried.fa --out-kmers out_DRR272392_queried_kmers.txt -m 5
 ```
 
 **Question30**: What are the two created files, what do they contain?
@@ -768,7 +771,9 @@ back_to_sequences --in-kmers query.fa --in-sequences /ifb/data/public/teachdata/
 <details><summary>Answer</summary>
 <p>
 
-TODO
+- file `out_DRR272392_queried.fa` shows the unitigs from `DRR272392.unitigs.fa` that contain at least 5 k-mers from our query.
+- file `out_DRR272392_queried_kmers.txt` shows the kmers from our query and their abundance in the contigs (here only 0 or 1 as this are unitigs)
+  - in this file we see that only 7 over 40 kmers are in `DRR272392.unitigs.fa`. This is not 46% as output by kmindex. We are here facing some false positives from `kmindex`. In case you don't know what to do this weekend, you may try to re-build the index with a lower FP rate (say 0.1%).
 </p>
 </details>
 
@@ -777,6 +782,7 @@ TODO
 <details><summary>Answer</summary>
 <p>
 
-TODO
+- adding the `--output-kmer-positions`,the `out_DRR272392_queried_kmers.txt` does not show anymore the number of occurrences of k-mers from the query in the `DRR272392.unitigs.fa`, but instead it shows their occurrences positions in this file (and their orientation)
+- adding the `--output-mapping-positions`, the `out_DRR272392_queried.fa` also shows the position of kmers from the query  in unitigs from `DRR272392.unitigs.fa` that contain at least 5 k-mers from our query.
 </p>
 </details>
