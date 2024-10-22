@@ -4,7 +4,7 @@ Pierre Peterlongo. Ebame-9.
 
 Lecture slides Pierre_Peterlongo_kmers.pdf
 
-## 0. Preliminaries
+## Chapter 0. Preliminaries
 
 For this tutorial we prepared VMs on wich we installed kmtricks and kmindex. 
 After you connect to your VM through SSH run the following command:
@@ -31,14 +31,24 @@ The data are already on the VM.
 
 ### Tools used for this tutorial.
 
-1. **kmtricks**. As it takes several minutes, we already installed kmtricks for you. It is accessible by `~/kmtricks/bin/kmtricks`. If you're interested, here is how it was installed:
+1. **kmtricks**. As it takes several minutes, we already installed kmtricks for you. It is accessible by `~/kmtricks/bin/kmtricks`. 
 
+<details><summary>If you're interested, here is how it was installed:</summary>
+<p>
+  
 ```bash
 sudo apt-get install cmake --yes
 git clone --recursive https://github.com/tlemane/kmtricks
 cd kmtricks
 ./install.sh 
 ```
+
+- `git clone` needs ~1mn
+- `./install.sh` needs ~6mn30
+
+</p>
+</details>
+
 
 Note that kmtricks can also be installed by other means (see this [doc](https://github.com/tlemane/kmtricks/wiki)).
 
@@ -47,7 +57,7 @@ Note that kmtricks can also be installed by other means (see this [doc](https://
 3. **back_to_sequences**. You will install it, see the dedicated section below
   
 
-## 1. Testing kmtricks
+## Chapter 1. Testing kmtricks
 
 ### 1.1 Create a counted kmer matrix
 
@@ -66,7 +76,32 @@ echo "D2: /home/ubuntu/data/public/sra/SRR8653248_1.fastq.gz" >> fof_sra.txt
 
 **Question1**: What is the difference between '>' and '>>' in the previous command?
 
+<details><summary>Answer</summary>
+<p>
+
+- `cmd > file.txt` enables to store the output of `cmd` in `file.txt`, erasing its potential previous content.
+- `cmd >> file.txt` enables to add the output of `cmd` at the end of `file.txt`.
+</p>
+</details>
+
 **Question2**: What is the cumulated size of `D1`and `D2`?
+
+<details><summary>Answer</summary>
+<p>
+
+`ls -lh /home/ubuntu/data/public/sra/SRR8652861_1.fastq.gz /home/ubuntu/data/public/sra/SRR8653248_1.fastq.gz`
+This is 255M+185M = 440M
+
+If you want to know the size of uncompressed files: 
+- `zcat /home/ubuntu/data/public/sra/SRR8652861_1.fastq.gz | wc -c`
+  - 976890579 bytes that are ~932MB (I use https://www.matisse.net/bitcalc for conversions)
+- `zcat /home/ubuntu/data/public/sra/SRR8653248_1.fastq.gz | wc -c`
+  - 712426733 bytes that are ~679MB.
+
+So the total size of uncompressed files is ~1.5GB
+
+</p>
+</details>
 
 **Question3**: How to consider not only reads1, but to consider that `D1`is composed of `SRR8652861_1.fastq.gz` **and** `SRR8652861_2.fastq.gz`, and `D2` is composed of `SRR8653248_1.fastq.gz` **and** `SRR8653248_2.fastq.gz`?
 
