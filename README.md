@@ -142,7 +142,13 @@ echo "D2:  /home/ubuntu/data/public/sra/SRR8653248_1.fastq.gz ; /home/ubuntu/dat
 <details><summary>Answer</summary>
 <p>
 
-TODO
+1. `pipeline`: We used the `pipeline` command from kmtricks. It calls various submodules for you
+2. `--file fof_sra.txt`: This is the file of files
+3. `--run-dir ./matrix_example`: Where the matrices (among other things) is going to be stored 
+4. `--mode kmer:count:bin`: There are many possible output. We chose to represent counted kmers in binary format
+5. `--hard-min 2`: We removed kmers having only one occurrence in the input file
+6. `--cpr`: Output files are compressed
+7. `-t 16`: We use 16 threads
 </p>
 </details>
   
@@ -151,7 +157,55 @@ TODO
 <details><summary>Answer</summary>
 <p>
 
-TODO
+```bash
+tree matrix_example/
+matrix_example/
+|-- build_infos.txt
+|-- config_gatb
+|   `-- gatb.config
+|-- counts
+|   |-- partition_0
+|   |-- partition_1
+|   |-- partition_2
+|   `-- partition_3
+|-- filters
+|-- fpr
+|-- hash.info
+|-- histograms
+|-- howde_index
+|-- kmtricks.fof
+|-- matrices
+|   |-- matrix_0.count.lz4
+|   |-- matrix_1.count.lz4
+|   |-- matrix_2.count.lz4
+|   `-- matrix_3.count.lz4
+|-- merge_infos
+|   |-- partition0.merge_info
+|   |-- partition1.merge_info
+|   |-- partition2.merge_info
+|   `-- partition3.merge_info
+|-- minimizers
+|   |-- minimizers.0
+|   |-- minimizers.1
+|   |-- minimizers.2
+|   `-- minimizers.3
+|-- options.txt
+|-- partition_infos
+|   |-- D1.pinfo
+|   `-- D2.pinfo
+|-- repartition_gatb
+|   `-- repartition.minimRepart
+|-- run_infos.txt
+`-- superkmers
+    |-- D1
+    |   |-- PartiInfoFile
+    |   `-- SuperKmerBinInfoFile
+    `-- D2
+        |-- PartiInfoFile
+        `-- SuperKmerBinInfoFile
+```
+
+The most interesting output from this are the four matrices in the `matrix_example/matrices` directory
 </p>
 </details>
 
@@ -161,11 +215,12 @@ TODO
 ~/kmtricks/bin/kmtricks aggregate --matrix kmer --format text --cpr-in --run-dir matrix_example >  kmer_matrix.txt
 ```
 
+
 **Question6**: What is the result and what information does it contain?
 <details><summary>Answer</summary>
 <p>
 
-TODO
+Now matrices are readable and can be viewed for instance with XXX
 </p>
 </details>
 
