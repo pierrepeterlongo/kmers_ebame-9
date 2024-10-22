@@ -468,7 +468,8 @@ For each of them, we want to create in the file of file a line as `DRR024015: /i
 2. `accession='basename $filename | cut -d "." -f 1'`; collects the accession value (`DRR024015` on the example).
   - It removes the path of the filename (removes `/ifb/data/public/teachdata/ebame/kmindex/SRA_VIRAL/`)
   - It cuts the remaining (`DRR024015.unitigs.fa`) to keep only what is before first '.' (`cut -d "." -f 1`)
-3. it prints the accession followed by ':' and then the full path 
+3. it prints the accession followed by ':' and then the full path
+4. At the end we store everything in `fof.txt` with `> fof.txt`
 </p>
 </details>
 
@@ -527,7 +528,7 @@ kmindex expects 3 output information:
 - the name of the created index. This will be used in the main index. This is the `--register-as` parameter.
   
 
-**Not a Question18**: Run the completed command:
+**Not a Question18**: Run the following command, building an index.
 
 
 ```bash
@@ -543,7 +544,7 @@ kmindex build --index index_VRL --run-dir dir_index_VRL --register-as reg_index_
 - One is `dir_index_VRL`. This is where the bloom filter matrices are (in `matrices` sub directory).
 - One is `index_VRL`. It contains:
   - a symbolic link to the `dir_index_VRL` directory
-  - an `index.json` file that lists the names of indexed files (used latter at query time)
+  - an `index.json` file that lists the names of indexed files (used later at query time)
 </p>
 </details>
 
@@ -612,6 +613,8 @@ Enables to show that 100% of kmers of the three unitigs in the query are in set 
 <p>
 
 We have indexed 25-mers, while our goal was to query 31-mers, so we query 6 consecutive 25-mers per 31-mer. This is the [findere](https://github.com/lrobidou/findere) trick. 
+- using `-z 1` the result show more results, that are false positives.
+- using `-z 8` we query 33-mers and some results obtained with 31-mers (`-z 6`) show a lower amount of shared k-mers.
 </p>
 </details>
 
@@ -620,9 +623,19 @@ We have indexed 25-mers, while our goal was to query 31-mers, so we query 6 cons
 **Question25** Create a second index with files located in `~/data/mydatalocal/SRA_VIRAL2` (create a fof2.txt file of files)
 <details><summary>Answer</summary>
 <p>
-TODO +
+
+Create a second file of files: 
 ```bash
-kmindex build --index index_VRL --run-dir dir_index_VRL2 --register-as reg_index_VRL2 --fof fof2.txt --kmer-size 25 XXX
+for filename in `ls /ifb/data/public/teachdata/ebame/kmindex/SRA_VIRAL2/*.fa`;
+  do
+    accession=`basename $filename | cut -d "." -f 1`;
+    echo $accession: $filename;
+  done > fof2.txt
+```
+
+Now build a second index
+```bash
+kmindex build --index index_VRL --run-dir dir_index_VRL2 --register-as reg_index_VRL2 --fof fof2.txt --kmer-size 25 --bloom-size 1822457 --hard-min 1 --fof fof.txt
 ```
 </p>
 </details>
@@ -633,7 +646,9 @@ kmindex build --index index_VRL --run-dir dir_index_VRL2 --register-as reg_index
 <details><summary>Answer</summary>
 <p>
 
-TODO
+- `index`: this is the main index location
+- `run-dir`: this is the run directory where matrices for this dataset (fof2) are going to be stored
+- `register-as`: this second index will be _register as_ `reg_index_VRL2` in the main index `index_VRL`
 </p>
 </details>
 
@@ -642,7 +657,8 @@ TODO
 <details><summary>Answer</summary>
 <p>
 
-TODO
+- `dir_index_VRL2` contains the newly created matrices
+- `index_VRL` contains now two symbolic links and `index.json` stores the lists the names of the 200 indexed files
 </p>
 </details>
 
@@ -651,7 +667,17 @@ TODO
 <details><summary>Answer</summary>
 <p>
 
-TODO
+```bash
+kmindex query -i index_VRL -q query.fa -r 0.1  -z 8
+[24/10/22 13:51:27][I:99280] Global index: 'index_VRL'
+[24/10/22 13:51:27][I:99280] Starting 'reg_index_VRL' query (100 samples)
+[24/10/22 13:51:27][I:99280] Index 'reg_index_VRL' processed. (00s)
+[24/10/22 13:51:27][I:99280] Starting 'reg_index_VRL2' query (100 samples)
+[24/10/22 13:51:27][I:99280] Index 'reg_index_VRL2' processed. (00s)
+[24/10/22 13:51:27][I:99280] Done (00s).
+```
+
+We see that the two indexes have been queried
 </p>
 </details>
 
