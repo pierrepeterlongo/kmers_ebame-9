@@ -258,7 +258,7 @@ kmtricks can output results in a human readable format:
 
 ### 1.2 Differences between matrices
 
-Imagine now we are interested in a new dataset SRR8653247_1.fastq.gz but neither in SRR8652861_1.fastq.gz nor SRR8653248_1.fastq.gz
+Imagine now we are interested in a new dataset SRR8653247_1.fastq.gz. We want kmers neither in SRR8652861_1.fastq.gz nor SRR8653248_1.fastq.gz.
 
 To do this we can use the filter module. 
 However, this module is not installed by default. Let's install it:
@@ -363,11 +363,11 @@ cd ~/kmtricks_tests/
 ../kmtricks/bin/kmtricks aggregate --matrix kmer --format text --cpr-in --run-dir matrix_example_plugin > final_matrix_plugin.txt
 ```
 
-**Question11**: validate on the obtained `final_matrix_plugin.txt` that kmers have an abundance of at least 12 and 12 in `D1`and `D2`.
+**Question11**: validate (visually) on the obtained `final_matrix_plugin.txt` that kmers have an abundance of at least 12 and 12 in `D1`and `D2`.
 <details><summary>Answer</summary>
 <p>
 
-TODO
+`head final_matrix_plugin.txt` enables to show that first kmers have an abundance at least 12 in the two datasets.
 </p>
 </details>
 
@@ -375,7 +375,34 @@ TODO
 <details><summary>Answer</summary>
 <p>
 
-TODO
+In this case we redo exactly the same steps from the start of section 1.4, replacing the `process_kmer` function by
+```c++
+bool process_kmer(const uint64_t* kmer_data, std::vector<count_type>& count_vector) override
+{
+// return true if all c[0] > 12 and c[1] > 2*c[0]
+  if (count_vector.size() >= 2 && count_vector[0] > m_threshold && count_vector[1] > 2*count_vector[0]){
+    return true;
+  }
+  return false;
+}
+```
+
+Recompile (still with `-p` option) and re-run kmtricks changing the output directory name: 
+```bash
+../kmtricks/bin/kmtricks pipeline --plugin ../kmtricks/build/plugins/libmy_plugin.so --plugin-config 12  --file fof_sra.txt --mode kmer:count:bin --hard-min 2 --cpr -t 16 --run-dir matrix_example_plugin2
+../kmtricks/bin/kmtricks aggregate --matrix kmer --format text --cpr-in --run-dir matrix_example_plugin2 > final_matrix_plugin2.txt
+```
+
+Verify results
+```bash
+head final_matrix_plugin2.txt 
+AAAAAAATATATACGTGAGCAAGAGTTACAT 15 75
+AAAAAAATCACCTTGCTTAAGTATAATGTAG 21 50
+AAAAAATATATACGTGAGCAAGAGTTACATG 15 74
+AAAAAATCACCTTGCTTAAGTATAATGTAGG 21 51
+...
+```
+
 </p>
 </details>
 
