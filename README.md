@@ -465,7 +465,7 @@ Each `.fa` file is as `/ifb/data/public/teachdata/ebame/kmindex/SRA_VIRAL/DRR024
 For each of them, we want to create in the file of file a line as `DRR024015: /ifb/data/public/teachdata/ebame/kmindex/SRA_VIRAL/DRR024015.unitigs.fa`
 
 1. The `for` loop enumerates each `.fa` file.
-2. `accession=\`basename $filename | cut -d "." -f 1\``; collects the accession value (`DRR024015` on the example).
+2. `accession='basename $filename | cut -d "." -f 1'`; collects the accession value (`DRR024015` on the example).
   - It removes the path of the filename (removes `/ifb/data/public/teachdata/ebame/kmindex/SRA_VIRAL/`)
   - It cuts the remaining (`DRR024015.unitigs.fa`) to keep only what is before first '.' (`cut -d "." -f 1`)
 3. it prints the accession followed by ':' and then the full path 
@@ -527,26 +527,23 @@ kmindex expects 3 output information:
 - the name of the created index. This will be used in the main index. This is the `--register-as` parameter.
   
 
-**Question18**: add the missing options and run the completed command:
+**Not a Question18**: Run the completed command:
 
 
 ```bash
-kmindex build --index index_VRL --run-dir dir_index_VRL --register-as reg_index_VRL --kmer-size 25 XXX
+kmindex build --index index_VRL --run-dir dir_index_VRL --register-as reg_index_VRL --kmer-size 25 --bloom-size 1822457 --hard-min 1 --fof fof.txt
 ```
-
-<details><summary>Answer</summary>
-<p>
-
-TODO
-</p>
-</details>
+(takes 30 seconds)
 
 **Question19**: look at the two created directories, and explain their content.
 
 <details><summary>Answer</summary>
 <p>
 
-TODO
+- One is `dir_index_VRL`. This is where the bloom filter matrices are (in `matrices` sub directory).
+- One is `index_VRL`. It contains:
+  - a symbolic link to the `dir_index_VRL` directory
+  - an `index.json` file that lists the names of indexed files (used latter at query time)
 </p>
 </details>
 
@@ -554,14 +551,16 @@ TODO
 
 <details><summary>Answer</summary>
 <p>
-
-TODO
+```bash
+ kmindex index-infos -i index_VRL/ 
+```
+  Lists the indexed files
 </p>
 </details>
 
 We arrive now at the most interesting part (?) of the day: let's query our sequences. We want to know where the 3 first reads of `R10000513.unitigs.fa` are eventually among the 100 files we've indexed
 
-Let's first create the query:
+Let's first create the query (containing the first 3 unitigs from `ERR10000513unitigs.fa`:
 
 ```bash
 head -n 6 /ifb/data/public/teachdata/ebame/kmindex/SRA_VIRAL/ERR10000513.unitigs.fa > query.fa
@@ -570,8 +569,10 @@ head -n 6 /ifb/data/public/teachdata/ebame/kmindex/SRA_VIRAL/ERR10000513.unitigs
 And now let's run the query:
 
 ```bash
-kmindex query -i index_VRL -q query.fa -z 5
+kmindex query -i index_VRL -q query.fa -r 0.1 -z 6
 ```
+
+- Note: `-r 0.1` enables to output indexed datasets for which at least 10% of the kmers from the query are in the dataset.
 
 **Question21**. Was it fast?
 
@@ -587,7 +588,9 @@ YES :)
 <details><summary>Answer</summary>
 <p>
 
-TODO
+The previous command created a `output/reg_index_VRL.json` file.
+For each queried dataset it shows the ratio of shared kmers between the query and this dataset.
+
 </p>
 </details>
 
@@ -596,7 +599,10 @@ TODO
 <details><summary>Answer</summary>
 <p>
 
-TODO
+```bash
+grep ERR10000513  output/reg_index_VRL.json
+```
+Enables to show that 100% of kmers of the three unitigs in the query are in set `ERR10000513`.
 </p>
 </details>
 
@@ -605,11 +611,11 @@ TODO
 <details><summary>Answer</summary>
 <p>
 
-TODO
+We have indexed 25-mers, while our goal was to query 31-mers, so we query 6 consecutive 25-mers per 31-mer. This is the [findere](https://github.com/lrobidou/findere) trick. 
 </p>
 </details>
 
-### 2.3 Add a second index to the first one
+### 2.3 If we have time: Add a second index to the first one
 
 **Question25** Create a second index with files located in `~/data/mydatalocal/SRA_VIRAL2` (create a fof2.txt file of files)
 <details><summary>Answer</summary>
