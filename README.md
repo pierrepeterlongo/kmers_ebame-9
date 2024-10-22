@@ -105,6 +105,24 @@ So the total size of uncompressed files is ~1.5GB
 
 **Question3**: How to consider not only reads1, but to consider that `D1`is composed of `SRR8652861_1.fastq.gz` **and** `SRR8652861_2.fastq.gz`, and `D2` is composed of `SRR8653248_1.fastq.gz` **and** `SRR8653248_2.fastq.gz`?
 
+<details><summary>Answer</summary>
+<p>
+
+With kmindex one line may correspond to multiple input files. So if we wish `D1` to be  `SRR8652861_1.fastq.gz` **and** `SRR8652861_2.fastq.gz` we can indicate this line in the for D1:
+
+`D1: /home/ubuntu/data/public/sra/SRR8652861_1.fastq.gz ; /home/ubuntu/data/public/sra/SRR8652861_2.fastq.gz`
+
+Finally, we can build the fof.txt for D1 and D2 by:
+
+```bash
+echo "D1: /home/ubuntu/data/public/sra/SRR8652861_1.fastq.gz ; /home/ubuntu/data/public/sra/SRR8652861_2.fastq.gz" > fof_sra.txt
+echo "D2:  /home/ubuntu/data/public/sra/SRR8653248_1.fastq.gz ; /home/ubuntu/data/public/sra/SRR8653248_2.fastq.gz" >> fof_sra.txt
+```
+
+(but don't do this, I'd take too much time for this tuto)
+</p>
+</details>
+
 - Create the raw counting matrix
 
 ```bash
@@ -120,9 +138,22 @@ So the total size of uncompressed files is ~1.5GB
 5. `--hard-min 2`
 6. `--cpr`
 7. `-t 16`
+
+<details><summary>Answer</summary>
+<p>
+
+TODO
+</p>
+</details>
   
 
 **Question5**: What is the main output from this command? Can humans read it?
+<details><summary>Answer</summary>
+<p>
+
+TODO
+</p>
+</details>
 
 - Dump the matrix in a human-readable format:
 
@@ -131,10 +162,28 @@ So the total size of uncompressed files is ~1.5GB
 ```
 
 **Question6**: What is the result and what information does it contain?
+<details><summary>Answer</summary>
+<p>
+
+TODO
+</p>
+</details>
 
 **Question7**: How many distinct *solid* kmers the two datasets contain?
+<details><summary>Answer</summary>
+<p>
+
+TODO
+</p>
+</details>
 
 **Question8**: We could have dumped directly the matrices in a human-readable format. How to do this?
+<details><summary>Answer</summary>
+<p>
+
+TODO
+</p>
+</details>
 
 ### 1.2 Differences between matrices
 
@@ -159,8 +208,20 @@ echo "R1: /home/ubuntu/data/public/sra/SRR8653247_1.fastq.gz" > remove_fof.txt
 ```
 
 **Question9**: validate that first kmer found is only in `R1` and not in `D1` `D2`
+<details><summary>Answer</summary>
+<p>
+
+TODO
+</p>
+</details>
 
 **Question10**: How many distinct kmers are only in `R1` and not in `D1` nor `D2`?
+<details><summary>Answer</summary>
+<p>
+
+TODO
+</p>
+</details>
 
 ### 1.3 Find kmers present in all datasets:
 
@@ -230,10 +291,22 @@ cd ~/kmtricks_tests/
 ```
 
 **Question11**: validate on the obtained `final_matrix_plugin.txt` that kmers have an abundance of at least 12 and 12 in `D1`and `D2`.
+<details><summary>Answer</summary>
+<p>
+
+TODO
+</p>
+</details>
 
 **Question12**: Modify the plugin (function `process_kmer`) to retain only kmers seen at least 12 times in `D1` and whose abundance is at least double in `D2`. Recompile, re-test, and validate the output.
+<details><summary>Answer</summary>
+<p>
 
-## 2. Testing kmindex
+TODO
+</p>
+</details>
+
+## Chapter 2. Testing kmindex
 
 Up to now, we have created matrices. However, they are used as indexes. This is where kmindex arrives. It can use kmtricks matrices as the basis for building indexes, but it can also handle all the indexing and query pipelines.
 
@@ -256,20 +329,44 @@ mkdir kmindex_tests && cd kmindex_tests
 ```
 
 **Question13**: Check that kmindex is installed and have a look at the help.
+<details><summary>Answer</summary>
+<p>
+
+TODO
+</p>
+</details>
 
 ### 2.2 Create a first index
 
 Let us construct a first index from a set of 100 unitig files from the logan project.
 
 **Question14**: As files contain unitigs, what should be chosen as the minimum abundance to keep a k-mer? What is the corresponding option name?
+<details><summary>Answer</summary>
+<p>
+
+TODO
+</p>
+</details>
 
 **Question15**: The number of distinct kmers per unitig file is below $2^{19}$. We will create bloom filters so that the false positive rate is 25%. What should be the size of the bloom filters?
+<details><summary>Answer</summary>
+<p>
+
+TODO
+</p>
+</details>
 
 - Note1: we used [ntcard](https://github.com/bcgsc/ntCard) to estimate the number of kmers in each file.
 - Note2: see for instance [Bloom filter calculator](https://hur.st/bloomfilter/), using a unique hash function, to compute the BF size, knowing the number of kmers to index
   
 
 **Question16**: What is the option name used to fix the bloom filter size?
+<details><summary>Answer</summary>
+<p>
+
+TODO
+</p>
+</details>
 
 We can also use the following command lines for automatic computation.
 
@@ -291,6 +388,12 @@ done > fof.txt
 ```
 
 **Question17**: Decorticate this for loop, understanding each sub-command.
+<details><summary>Answer</summary>
+<p>
+
+TODO
+</p>
+</details>
 
 Now we are ready to run kmindex.
 
@@ -303,13 +406,35 @@ kmindex expects 3 output information:
 
 **Question18**: add the missing options and run the completed command:
 
+
 ```bash
 kmindex build --index index_VRL --run-dir dir_index_VRL --register-as reg_index_VRL --kmer-size 25 XXX
 ```
 
+<details><summary>Answer</summary>
+<p>
+
+TODO
+</p>
+</details>
+
 **Question19**: look at the two created directories, and explain their content.
 
+<details><summary>Answer</summary>
+<p>
+
+TODO
+</p>
+</details>
+
 **Question20**: Use the `index-infos` kmindex command on the created index
+
+<details><summary>Answer</summary>
+<p>
+
+TODO
+</p>
+</details>
 
 We arrive now at the most interesting part (?) of the day: let's query our sequences. We want to know where the 3 first reads of `R10000513.unitigs.fa` are eventually among the 100 files we've indexed
 
@@ -327,25 +452,79 @@ kmindex query -i index_VRL -q query.fa -z 5
 
 **Question21**. Was it fast?
 
+<details><summary>Answer</summary>
+<p>
+
+YES :)
+</p>
+</details>
+
 **Question22:** Check and understand the output json file
+
+<details><summary>Answer</summary>
+<p>
+
+TODO
+</p>
+</details>
 
 **Question23**: verify that each of the three reads was correctly found in the ERR10000513 file
 
+<details><summary>Answer</summary>
+<p>
+
+TODO
+</p>
+</details>
+
 **Question24**: recall the role of the -z parameter, and try different values (including 1 and 8)
+
+<details><summary>Answer</summary>
+<p>
+
+TODO
+</p>
+</details>
 
 ### 2.3 Add a second index to the first one
 
 **Question25** Create a second index with files located in `~/data/mydatalocal/SRA_VIRAL2` (create a fof2.txt file of files)
-
+<details><summary>Answer</summary>
+<p>
+TODO +
 ```bash
 kmindex build --index index_VRL --run-dir dir_index_VRL2 --register-as reg_index_VRL2 --fof fof2.txt --kmer-size 25 XXX
 ```
+</p>
+</details>
+
 
 **Question26**: understand parameters **index**, **run-dir**, **register-as**
 
+<details><summary>Answer</summary>
+<p>
+
+TODO
+</p>
+</details>
+
 **Question27**: understand the structure of the directories
 
+<details><summary>Answer</summary>
+<p>
+
+TODO
+</p>
+</details>
+
 **Question28**: restart the previous query with the same parameters, did we query both indexes?
+
+<details><summary>Answer</summary>
+<p>
+
+TODO
+</p>
+</details>
 
 ### 2.4 Merge a second index to the first one
 
@@ -374,7 +553,14 @@ kmindex merge --index merged_index_VRL --new-name merged_index_VRL --to-merge re
 
 **Question29**: restart the previous query. How many indexes were queried?
 
-## 3. Find matches between sequences.
+<details><summary>Answer</summary>
+<p>
+
+TODO
+</p>
+</details>
+
+## Chapter 3. Find matches between sequences.
 
 Up to now we "only" found matches between a query and a set of sequences (here unitigs, but it can be genes, reads, ...). Once we have identified a target for a query one may want to go further and find back to which sequences the query is similar.
 
@@ -415,4 +601,18 @@ back_to_sequences --in-kmers query.fa --in-sequences /ifb/data/public/teachdata/
 
 **Question30**: What are the two created files, what do they contain?
 
-**Question31**: Check the possible options of b2s, enabling to obtain more "pseudo-mapping" informations.
+<details><summary>Answer</summary>
+<p>
+
+TODO
+</p>
+</details>
+
+**Question31**: Check the possible options of b2s, enabling to obtain more "pseudo-mapping" information.
+
+<details><summary>Answer</summary>
+<p>
+
+TODO
+</p>
+</details>
