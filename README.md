@@ -57,7 +57,7 @@ Note that kmtricks can also be installed by other means (see this [doc](https://
 3. **back_to_sequences**. You will install it, see the dedicated section below
   
 
-## Chapter 1. Testing kmtricks
+## Chapter 1. Testing [kmtricks](https://github.com/tlemane/kmtricks/)
 
 ### 1.1 Create a counted kmer matrix
 
@@ -406,7 +406,7 @@ AAAAAATCACCTTGCTTAAGTATAATGTAGG 21 51
 </p>
 </details>
 
-## Chapter 2. Testing kmindex
+## Chapter 2. Testing [kmindex](https://github.com/tlemane/kmindex)
 
 Up to now, we have created matrices. However, they are used as indexes. This is where kmindex arrives. It can use kmtricks matrices as the basis for building indexes, but it can also handle all the indexing and query pipelines.
 
@@ -724,7 +724,7 @@ We see that we queried here a unique index.
 </p>
 </details>
 
-## Chapter 3. Find matches between sequences using _back to sequences_
+## Chapter 3. Find matches between sequences using [back to sequences](https://github.com/pierrepeterlongo/back_to_sequences)
 
 Up to now we "only" found matches between a query and a set of sequences (here unitigs, but it can be genes, reads, ...). Once we have identified a target for a query one may want to go further and find back to which sequences the query is similar.
 
