@@ -64,7 +64,7 @@ Note that kmtricks can also be installed by other means (see this [doc](https://
 - Create a directory and go there
 
 ```bash
-mkdir ~/kmtricks_tests && cd kmtricks_tests
+mkdir ~/kmtricks_tests && cd ~kmtricks_tests
 ```
 
 - Create a file of file containing two datasets: SRR8652861_1 and SRR8653248_1.
