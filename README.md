@@ -31,9 +31,9 @@ The data are already on the VM.
 
 ### Tools used for this tutorial.
 
-1. **kmtricks**. As it takes several minutes, we already installed kmtricks for you. It is accessible by `~/kmtricks/bin/kmtricks`. 
+1. **kmtricks**. As it takes several minutes, you installed kmtricks yesterday. It is accessible by `~/kmtricks/bin/kmtricks`. 
 
-<details><summary>If you're interested, here is how it was installed:</summary>
+<details><summary>Here is how you installed it:</summary>
 <p>
   
 ```bash
