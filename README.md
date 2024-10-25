@@ -64,7 +64,7 @@ Note that kmtricks can also be installed by other means (see this [doc](https://
 - Create a directory and go there
 
 ```bash
-mkdir ~/kmtricks_tests && cd ~kmtricks_tests
+mkdir ~/kmtricks_tests && cd ~/kmtricks_tests
 ```
 
 - Create a file of file containing two datasets: SRR8652861_1 and SRR8653248_1.
@@ -251,7 +251,7 @@ So there are ~67 million solid kmers in the two datasets.
 
 kmtricks can output results in a human readable format: 
 ```bash
-~/kmtricks/bin/kmtricks pipeline --file fof_sra.txt --run-dir ./readable_matrix_example --mode kmer:count:bin --hard-min 2 --cpr -t 16
+~/kmtricks/bin/kmtricks pipeline --file fof_sra.txt --run-dir ./readable_matrix_example --mode kmer:count:text --hard-min 2 --cpr -t 16
 ```
 </p>
 </details>
@@ -620,7 +620,7 @@ We have indexed 25-mers, while our goal was to query 31-mers, so we query 6 cons
 
 ### 2.3 If we have time: Add a second index to the first one
 
-**Question25** Create a second index with files located in `~/data/mydatalocal/SRA_VIRAL2` (create a fof2.txt file of files)
+**Question25** Create a second index with files located in `/ifb/data/public/teachdata/ebame/kmindex/SRA_VIRAL2` (create a fof2.txt file of files)
 <details><summary>Answer</summary>
 <p>
 
@@ -635,7 +635,7 @@ for filename in `ls /ifb/data/public/teachdata/ebame/kmindex/SRA_VIRAL2/*.fa`;
 
 Now build a second index
 ```bash
-kmindex build --index index_VRL --run-dir dir_index_VRL2 --register-as reg_index_VRL2 --fof fof2.txt --kmer-size 25 --bloom-size 1822457 --hard-min 1 --fof fof.txt
+kmindex build --index index_VRL --run-dir dir_index_VRL2 --register-as reg_index_VRL2 --fof fof2.txt --kmer-size 25 --bloom-size 1822457 --hard-min 1 
 ```
 </p>
 </details>
